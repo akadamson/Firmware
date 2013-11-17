@@ -36,7 +36,10 @@
 #include "utils.h"
 #include "hw_config.h"
 
+#define SETTLE_PAUSE 13
+
 static volatile int WatchDogCounter;
+static volatile int gotIMU = 0;
 
 void Periph_clock_enable(void)
 {
@@ -93,6 +96,8 @@ void setup(void)
         Delay_ms(100); //short blink
     }
 
+    LEDoff();
+
     if (GetVCPConnectMode() != eVCPConnectReset)
     {
         print("\r\nUSB startup delay...\r\n");
@@ -129,23 +134,40 @@ void setup(void)
 
     print("init MPU6050...\r\n");
 
-    while (MPU6050_Init())
+    int imuRetries = 10;
+    while ((imuRetries > 0) && MPU6050_Init())
     {
-        print("init MPU6050 failed, retrying...\r\n");
+        print("init MPU6050 failed, retries left: %d...\r\n", --imuRetries);
         Blink();
+    }
+
+    if (!(gotIMU = imuRetries ? 1 : 0))
+    {
+        print("\r\nWARNING: MPU6050 init failed, entering configration mode only...\r\n\r\n");
     }
 
     print("loading config...\r\n");
     configLoad();
 
-    print("calibrating MPU6050 at %ums...\r\n", millis());
-    MPU6050_Gyro_calibration();
+    if (gotIMU)
+    {
+        print("pausing for the gimbal to settle...\r\n");
+
+        for (int i = 0; i < SETTLE_PAUSE; i++)
+        {
+            LEDtoggle();
+            Delay_ms(1000);
+        }
+
+        print("calibrating MPU6050 at %ums...\r\n", millis());
+        MPU6050_Gyro_calibration();
+
+        print("Init Orientation\n\r");
+        Init_Orientation();
+    }
 
     print("init RC...\r\n");
     RC_Config();
-
-    print("Init Orientation\n\r");
-    Init_Orientation();
 
     InitSinArray();
 
@@ -221,7 +243,7 @@ int main(void)
             idlePerf = idleLoops * 100.0 * 1000 / timePassed / idleMax; // perf in percent
             idleLoops = 0;
 
-            if (ConfigMode == 0)
+            if ((ConfigMode == 0) && gotIMU)
             {
                 engineProcess(timePassed / 1000000.0);
             }

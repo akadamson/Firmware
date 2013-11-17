@@ -46,7 +46,7 @@ int MPU6050_Init(void)
     // Check to make sure there is a device out there and its on the
     // correct address
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x75); // Who Am I
     I2C1_WaitAck();
@@ -55,7 +55,7 @@ int MPU6050_Init(void)
     Delay_ms(1);
 
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFF));//ff-1(Read)
+    I2C1_SendByte((MPU6050_ADDR & 0xFF));//ff-1(Read)
     I2C1_WaitAck();
 
     mpu_adr = I2C1_ReceiveByte();//receive
@@ -73,7 +73,7 @@ int MPU6050_Init(void)
 
     // force a device reset
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x6B); // Force a reset
     I2C1_WaitAck();
@@ -85,7 +85,7 @@ int MPU6050_Init(void)
 
     // set the internal clock to be the Z AXIS gyro
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x6B);
     I2C1_WaitAck();
@@ -97,7 +97,7 @@ int MPU6050_Init(void)
 
     //  turn off all sleep modes
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x6C);
     I2C1_WaitAck();
@@ -109,7 +109,7 @@ int MPU6050_Init(void)
 
     //  Set the sample rate on the accel and refresh rate on the gyro
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x19); // Sample output rate
     I2C1_WaitAck();
@@ -121,7 +121,7 @@ int MPU6050_Init(void)
 
     // turn on the built in LPF
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x1A);
     I2C1_WaitAck();
@@ -133,7 +133,7 @@ int MPU6050_Init(void)
 
     // set the gyro scale
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x1B);
     I2C1_WaitAck();
@@ -145,7 +145,7 @@ int MPU6050_Init(void)
 
     // set the accel scale
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x1C);
     I2C1_WaitAck();
@@ -157,7 +157,7 @@ int MPU6050_Init(void)
 
     //  configure the interrupt(s) pin because we don't use it
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x37); // init pin config
     I2C1_WaitAck();
@@ -169,7 +169,7 @@ int MPU6050_Init(void)
 
     // disable the interrupt pin(s)
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x38); // init enable
     I2C1_WaitAck();
@@ -182,7 +182,7 @@ int MPU6050_Init(void)
 /*
     // this was bad code and was removed
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
     I2C1_SendByte(0x6A);
     I2C1_WaitAck();
@@ -201,7 +201,7 @@ void MPU6050_get(int cmd, uint8_t read[6])
     I2Cerror = 0;
 
     I2C1_Start();
-    I2C1_SendByte((0xD1 & 0xFE));//fe-0(Write)
+    I2C1_SendByte((MPU6050_ADDR & 0xFE));//fe-0(Write)
     I2C1_WaitAck();
 
     if (I2Cerror == 0)
@@ -213,7 +213,7 @@ void MPU6050_get(int cmd, uint8_t read[6])
         {
             I2C1_Stop();
             I2C1_Start();
-            I2C1_SendByte((0xD1 & 0xFF));//ff-1(Read)
+            I2C1_SendByte((MPU6050_ADDR & 0xFF));//ff-1(Read)
             I2C1_WaitAck();
 
             if (I2Cerror == 0)
@@ -277,7 +277,7 @@ void MPU6050_Gyro_get(float *GyroData)
 void MPU6050_Gyro_calibration(void)
 {
     uint8_t i;
-    int loops = 100;
+    int loops = 150;
     float InitGyroData[3];
 
     for (i = 0; i < loops; i++)

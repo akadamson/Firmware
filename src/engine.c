@@ -54,7 +54,7 @@ float pitch_setpoint = 0.0f, pitch_Error_last = 0.0f,  pitch_angle_correction;
 float roll_setpoint  = 0.0f,  roll_Error_last = 0.0f,   roll_angle_correction;
 float yaw_setpoint   = 0.0f,   yaw_Error_last = 0.0f,    yaw_angle_correction;
 
-float ADC1Ch13_yaw;
+//float ADC1Ch13_yaw;
 
 //static float rollRCOffset = 0.0f, pitchRCOffset = 0.0f, yawRCOffset = 0.0f;
 
@@ -252,8 +252,9 @@ void Get_Orientation(float *SmoothAcc, float *Orient, float *AccData, float *Gyr
 }
 
 //---------------------YAW autopan----------------------//
-#define DEADBAND 6.0f //in radians with respect to one motor pole (actual angle is (DEADBAND / numberPoles) * R2D)
-#define MOTORPOS2SETPNT 0.25f //scaling factor for how fast it should move
+//#define ANGLE2SETPOINT -1000
+#define DEADBAND 2.0f //in radians with respect to one motor pole (actual angle is (DEADBAND / numberPoles) * R2D)
+#define MOTORPOS2SETPNT 0.45f //scaling factor for how fast it should move
 #define AUTOPANSMOOTH 40.0f
 
 float centerPoint = 0.0f;
@@ -373,13 +374,13 @@ void engineProcess(float dt)
 
         if (debugPerf)
         {
-            print("idle: %5.2f%%, time[µs]: attitude est. %4d, IMU acc %4d, gyro %4d, angle %4d, calc %4d, PID %4d\r\n",
+            print("idle: %5.2f%%, time[Âµs]: attitude est. %4d, IMU acc %4d, gyro %4d, angle %4d, calc %4d, PID %4d\r\n",
                   GetIdlePerf(), tAll, tAccGet, tGyroGet, tAccAngle, tCalc, tPID);
         }
 
         if (debugRC)
         {
-            print(" RC2avg: %7.2f |  RC4avg: %7.2f |  RC3avg: %7.2f | RStep:%7.3f  PStep: %7.3f  YStep: %7.3f\r\n",
+            print(" RC2avg: %7.2f |  RC3avg: %7.2f |  RC4avg: %7.2f | RStep:%7.3f  PStep: %7.3f  YStep: %7.3f\r\n",
                   RCSmooth[ROLL], RCSmooth[PITCH], RCSmooth[YAW], Step[ROLL], Step[PITCH], Step[YAW]);
         }
 

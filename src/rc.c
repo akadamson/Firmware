@@ -43,11 +43,11 @@ void RC_Config(void)
 {
     GPIO_InitTypeDef    GPIO_InitStructure;
 
-  __disable_irq();
+    __disable_irq();
 
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
 
-  // PA15 must be initialized after PA15/PB3 are made available with GPIO_Remap_SWJ_JTAGDisable
+    // PA15 must be initialized after PA15/PB3 are made available with GPIO_Remap_SWJ_JTAGDisable
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_15;				// PA15
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;  	// Set to Input
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;   		// GPIO Speed
@@ -83,12 +83,12 @@ void RC_Config(void)
 
     Timer3_Config(); //RC control timer
 
-  __enable_irq();
+    __enable_irq();
 }
 
 /*-----------------Read RC on AUX 3--------------------------*/
 // Pitch
-static int rc3;
+static int rc3 = 0;
 
 int GetAUX3(void)
 {
@@ -99,11 +99,10 @@ void EXTI3_IRQHandler(void) //EXTernal interrupt routine PB3-Pitch
 {
     static unsigned short rc3a = 0, rc3b = 0;
 
-    if (EXTI_GetITStatus(EXTI_Line3) != RESET)
+    //if (EXTI_GetITStatus(EXTI_Line3) != RESET)
+    if (EXTI->PR & (1 << 3))
     {
         DEBUG_PutChar('3');
-        // EXTI3 interrupt pending?
-        //EXTI->PR |= (1 << 3); // clear pending interrupt
 
         if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_3) == 1)
         {
@@ -126,14 +125,16 @@ void EXTI3_IRQHandler(void) //EXTernal interrupt routine PB3-Pitch
             //rc3 = 0;
         }
 
-        EXTI_ClearITPendingBit(EXTI_Line3); // clear pending interrupt
+        // EXTI3 interrupt pending?
+        // EXTI_ClearITPendingBit(EXTI_Line3); // clear pending interrupt
+        EXTI->PR |= (1 << 3); // clear pending interrupt
 
     }
 }
 
 /*-----------------Read RC on AUX 2--------------------------*/
 // Roll
-static int rc2;
+static int rc2 = 0;
 
 int GetAUX2(void)
 {
@@ -144,11 +145,10 @@ void EXTI2_IRQHandler(void) //EXTernal interrupt routine PC2-Pitch
 {
     static unsigned short rc2a = 0, rc2b = 0;
 
-    if (EXTI_GetITStatus(EXTI_Line2) != RESET)
+    //if (EXTI_GetITStatus(EXTI_Line2) != RESET)
+    if (EXTI->PR & (1 << 2))
     {
         DEBUG_PutChar('2');
-        // EXTI2 interrupt pending?
-        //EXTI->PR |= (1 << 2); // clear pending interrupt
 
         if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) == 1)
         {
@@ -171,14 +171,16 @@ void EXTI2_IRQHandler(void) //EXTernal interrupt routine PC2-Pitch
             //rc2 = 0;
         }
 
-        EXTI_ClearITPendingBit(EXTI_Line2); // clear pending interrupt
+        // EXTI2 interrupt pending?
+        //EXTI_ClearITPendingBit(EXTI_Line2); // clear pending interrupt
+        EXTI->PR |= (1 << 2); // clear pending interrupt
 
     }
 }
 
 /*-----------------Read RC on AUX 4--------------------------*/
 // Yaw
-static int rc4;
+static int rc4 = 0;
 
 int GetAUX4(void)
 {
@@ -189,13 +191,10 @@ void EXTI4_IRQHandler(void) //EXTernal interrupt routine PB4-Yaw
 {
     static unsigned short rc4a = 0, rc4b = 0;
 
-    if (EXTI_GetITStatus(EXTI_Line4) != RESET)
+    //if (EXTI_GetITStatus(EXTI_Line4) != RESET)
+    if (EXTI->PR & (1 << 4))
     {
         DEBUG_PutChar('4');
-
-        // EXTI3 interrupt pending?
-        //EXTI->PR |= (1 << 4);                         // clear pending interrupt
-
 
         if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_4) == 1)
         {
@@ -218,8 +217,9 @@ void EXTI4_IRQHandler(void) //EXTernal interrupt routine PB4-Yaw
             //rc4 = 0;
         }
 
-        EXTI_ClearITPendingBit(EXTI_Line4); // clear pending interrupt
-
+        // EXTI3 interrupt pending?
+        //EXTI_ClearITPendingBit(EXTI_Line4); // clear pending interrupt
+        EXTI->PR |= (1 << 4);                         // clear pending interrupt
     }
 }
 

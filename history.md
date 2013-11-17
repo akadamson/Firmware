@@ -215,3 +215,18 @@
     - added GPL license to sources
     - fixed pitch axis when angle is greater than 50 degrees, allows corrected angles to be 90 degrees of greater
     - added I to the PD routines and include a limiting feature
+
+20131114
+    - added define for IMU address
+    - added acc007 changes for debug/desk config of board when no IMU is present
+    - updated attitude with paulphil changes for pitch greater than 45 degrees
+    - updated rc pwm detect for futaba receievers
+    - Released 0.4.4 firmware
+
+20131115
+    - added delay to startup to allow gimbal to settle
+    - Released 0.4.5 firmware
+
+20131116
+    - tweaking startup delay and added slow flashing LED
+    - Release 0.4.5.1 firmware
