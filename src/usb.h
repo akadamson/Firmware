@@ -1,6 +1,6 @@
 /*
-    Original work Copyright (c) 2012 [Evaldis - RCG user name]
-    Modified work Copyright 2012 Alan K. Adamson
+    Original work Copyright (c) 2012 [ala42]
+    Modified work Copyright 2013 Alan K. Adamson
 
     This file is part of EvvGC.
 

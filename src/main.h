@@ -6,8 +6,8 @@
  */
 
 /*
-    Original work Copyright (c) 2012 [Evaldis - RCG user name]
-    Modified work Copyright 2012 Alan K. Adamson
+    Original work Copyright (c) 2013 [Evaldis - RCG user name]
+    Modified work Copyright 2013 Alan K. Adamson
 
     This file is part of EvvGC.
 
@@ -30,7 +30,7 @@
 #define MAIN_H_
 
 // software version number
-#define __EV_VERSION "0.4.4x"
+#define __EV_VERSION "0.4.6x"
 
 float GetIdlePerf(void);
 

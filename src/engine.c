@@ -6,8 +6,8 @@
  */
 
 /*
-    Original work Copyright (c) 2012 [Evaldis - RCG user name]
-    Modified work Copyright 2012 Alan K. Adamson
+    Original work Copyright (c) 2013 [Evaldis - RCG user name]
+    Modified work Copyright 2013 Alan K. Adamson
 
     This file is part of EvvGC.
 
@@ -98,7 +98,7 @@ void roll_PID(void)
         Output[ROLL] = OutputPrev[ROLL] + OUTPUT_RATE_LIMIT;
     }
 
-    if (OutputRate[ROLL] < (-OUTPUT_RATE_LIMIT))
+    if (OutputRate[ROLL] < -OUTPUT_RATE_LIMIT)
     {
         Output[ROLL] = OutputPrev[ROLL] - OUTPUT_RATE_LIMIT;
     }
@@ -132,7 +132,7 @@ void pitch_PID(void)
         Output[PITCH] = OutputPrev[PITCH] + OUTPUT_RATE_LIMIT;
     }
 
-    if (OutputRate[PITCH] < (-OUTPUT_RATE_LIMIT))
+    if (OutputRate[PITCH] < -OUTPUT_RATE_LIMIT)
     {
         Output[PITCH] = OutputPrev[PITCH] - OUTPUT_RATE_LIMIT;
     }
@@ -164,7 +164,7 @@ void yaw_PID(void)
         Output[YAW] = OutputPrev[YAW] + OUTPUT_RATE_LIMIT;
     }
 
-    if (OutputRate[YAW] < (-OUTPUT_RATE_LIMIT))
+    if (OutputRate[YAW] < -OUTPUT_RATE_LIMIT)
     {
         Output[YAW] = OutputPrev[YAW] - OUTPUT_RATE_LIMIT;
     }
@@ -235,7 +235,7 @@ void Get_Orientation(float *SmoothAcc, float *Orient, float *AccData, float *Gyr
     float GyroRate[EULAR];
 
     //AccAngle[ROLL]  = -(atan2f(AccData[X_AXIS], AccData[Z_AXIS]));   //Calculating roll ACC angle
-    AccAngle[ROLL]  = -(atan2f(AccData[X_AXIS], sqrtf( AccData[Z_AXIS] * AccData[Z_AXIS] + AccData[Y_AXIS] * AccData[Y_AXIS])));   //Calculating roll ACC angle
+    AccAngle[ROLL]  = -(atan2f(AccData[X_AXIS], sqrtf(AccData[Z_AXIS] * AccData[Z_AXIS] + AccData[Y_AXIS] * AccData[Y_AXIS])));   //Calculating roll ACC angle
     AccAngle[PITCH] = +(atan2f(AccData[Y_AXIS], AccData[Z_AXIS]));   //Calculating pitch ACC angle
 
     SmoothAcc[ROLL]  = ((SmoothAcc[ROLL] * 99.0f)  + AccAngle[ROLL])  / 100.0f; //Averaging roll ACC values
@@ -252,8 +252,8 @@ void Get_Orientation(float *SmoothAcc, float *Orient, float *AccData, float *Gyr
 }
 
 //---------------------YAW autopan----------------------//
-#define DEADBAND 2.0f //in radians with respect to one motor pole (actual angle is (DEADBAND / numberPoles) * R2D)
-#define MOTORPOS2SETPNT 0.35f //scaling factor for how fast it should move
+#define DEADBAND 6.0f //in radians with respect to one motor pole (actual angle is (DEADBAND / numberPoles) * R2D)
+#define MOTORPOS2SETPNT 0.25f //scaling factor for how fast it should move
 #define AUTOPANSMOOTH 40.0f
 
 float centerPoint = 0.0f;

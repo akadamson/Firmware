@@ -6,8 +6,8 @@
  */
 
 /*
-    Original work Copyright (c) 2012 [Evaldis - RCG user name]
-    Modified work Copyright 2012 Alan K. Adamson
+    Original work Copyright (c) 2013 [Evaldis - RCG user name]
+    Modified work Copyright 2013 Alan K. Adamson
 
     This file is part of EvvGC.
 
@@ -136,7 +136,7 @@ void SetPWMOrgFaster(int *pwm, float phi, int power)
     float fPower = 5 * power;
 
     phi = fmodf(phi, M_TWOPI); // sinf gets slow if phi >201
-    pwm[0] = (int)(sinf(phi)                * fPower + 0.5F) + (PWM_PERIODE / 2);
+    pwm[0] = (int)(sinf(phi)                    * fPower + 0.5F) + (PWM_PERIODE / 2);
     pwm[1] = (int)(sinf(phi + 2.0 / 3.0 * M_PI) * fPower + 0.5F) + (PWM_PERIODE / 2);
     pwm[2] = (int)(sinf(phi + 4.0 / 3.0 * M_PI) * fPower + 0.5F) + (PWM_PERIODE / 2);
 }
@@ -157,8 +157,8 @@ void SetPWMFastTable(int *pwm, float phi, int power)
     }
 
     int iPower = 5 * power;
-    pwm[0] = (sinDataI16[phiInt                          % SINARRAYSIZE] * iPower + SINARRAYSCALE / 2) / SINARRAYSCALE + (PWM_PERIODE / 2);
-    pwm[1] = (sinDataI16[(phiInt + 1 * SINARRAYSIZE / 3)     % SINARRAYSIZE] * iPower + SINARRAYSCALE / 2) / SINARRAYSCALE + (PWM_PERIODE / 2);
+    pwm[0] = (sinDataI16[phiInt                                % SINARRAYSIZE] * iPower + SINARRAYSCALE / 2) / SINARRAYSCALE + (PWM_PERIODE / 2);
+    pwm[1] = (sinDataI16[(phiInt + 1 * SINARRAYSIZE / 3)       % SINARRAYSIZE] * iPower + SINARRAYSCALE / 2) / SINARRAYSCALE + (PWM_PERIODE / 2);
     pwm[2] = (sinDataI16[(phiInt + (2 * SINARRAYSIZE + 1) / 3) % SINARRAYSIZE] * iPower + SINARRAYSCALE / 2) / SINARRAYSCALE + (PWM_PERIODE / 2);
 }
 
@@ -171,8 +171,10 @@ void SetPWM(int *pwm, float phi, int power)
 void ActivateIRQ(TIM_TypeDef *tim)
 {
     __disable_irq();
+
     tim->SR &= ~TIM_SR_UIF;   // clear UIF flag
     tim->DIER = TIM_DIER_UIE; // Enable update interrupt
+
     __enable_irq();
 }
 
@@ -238,6 +240,7 @@ void TIM5_IRQHandler(void) // yaw axis
         TIM5->SR &= ~TIM_SR_UIF; // clear UIF flag
 
         __disable_irq();
+
         unsigned short cnt = TIM5->CNT;
         UpdateCounter(YAW, cnt);
 
@@ -277,6 +280,7 @@ void TIM1_UP_IRQHandler(void) // pitch axis
     TIM1->SR &= ~TIM_SR_UIF; // clear UIF flag
 
     __disable_irq();
+
     unsigned short cnt = TIM1->CNT;
     UpdateCounter(PITCH, cnt);
 
@@ -297,6 +301,7 @@ void TIM8_UP_IRQHandler(void) // roll axis
     TIM8->SR &= ~TIM_SR_UIF; // clear UIF flag
 
     __disable_irq();
+
     unsigned short cnt = TIM8->CNT;
     UpdateCounter(ROLL, cnt);
 
@@ -427,6 +432,7 @@ void PWMConfig(void)
     SetupPWMIrq(TIM8_UP_IRQn); // roll
 
     __disable_irq();
+
     {
         /* code below is faster version of
         TIM_Cmd(TIM5, ENABLE);
@@ -446,5 +452,6 @@ void PWMConfig(void)
     TIM_CtrlPWMOutputs(TIM4, ENABLE);
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
     TIM_CtrlPWMOutputs(TIM8, ENABLE);
+
     __enable_irq();
 }
